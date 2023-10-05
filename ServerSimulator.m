@@ -10,6 +10,7 @@ classdef ServerSimulator
 
         J_ser
         E_ser
+        freq
     end
 
     methods
@@ -20,22 +21,25 @@ classdef ServerSimulator
             obj.fmax = fmax;
             obj.alfa = alfa;
             obj.betaSer = betaSer;
-            obj.kSer = 1.097e-27;
+            obj.kSer = kSer;
+            obj.freq = obj.fmax*unifrnd(1e-3,obj.alfa);
 
+        end
+        function [obj] = updateFrequency(obj)
+            obj.freq = obj.fmax*unifrnd(1e-3,obj.alfa);
         end
         function [serverDelay,serverEnergy] = simulateServer(obj,A,k)
-            freq = obj.fmax*unifrnd(1e-3,obj.alfa);
-            serverDelay = obj.computeServerDelay(A,k,freq);
-            serverEnergy = obj.computeServerEnergy(freq,serverDelay);
+            serverDelay = obj.computeServerDelay(A,k);
+            serverEnergy = obj.computeServerEnergy(serverDelay);
         end
 
-        function [Drcomp] = computeServerDelay(obj,A,k,freq)
+        function [Drcomp] = computeServerDelay(obj,A,k)
             residualNumberFlops = obj.J_ser(end)-obj.J_ser(k);
-            Drcomp = (A*residualNumberFlops)/(obj.betaSer*freq);
+            Drcomp = (A*residualNumberFlops)/(obj.betaSer*obj.freq);
         end
 
-        function [serverEnergy] = computeServerEnergy(obj,freq,Drcomp)
-            serverEnergy = obj.kSer*freq^3*Drcomp;
+        function [serverEnergy] = computeServerEnergy(obj,Drcomp)
+            serverEnergy = obj.kSer*obj.freq^3*Drcomp;
         end
     end
 end

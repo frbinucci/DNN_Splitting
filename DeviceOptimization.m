@@ -22,10 +22,12 @@ classdef DeviceOptimization
         kappa
         roll_off
         G
+
+        server
     end
 
     methods
-        function obj = DeviceOptimization(data_folder,Wmax,roll_off,beta,fmax,fmin,kappa,N0,pmax,mu,ni,lambda,V)
+        function obj = DeviceOptimization(data_folder,Wmax,roll_off,beta,fmax,fmin,kappa,N0,server,pmax,mu,ni,lambda,V)
             load(strcat(data_folder,"cumulative_energy_vs_SP.mat"))
             load(strcat(data_folder,"num_features_vs_SP.mat"))
             load(strcat(data_folder,"num_FLOPS_vs_SP.mat"))
@@ -58,6 +60,7 @@ classdef DeviceOptimization
             obj.fmax = fmax;
             obj.fmin = fmin;
             obj.kappa = kappa;
+            obj.server = server;
         end
 
         function [Wstar,kStar,gammaStar,fStar] = optimizeDevice(obj,Z,M,Y,A,h)
@@ -84,9 +87,10 @@ classdef DeviceOptimization
                         Wbest=0;
                         Dtx=0;
                     end
+                    Dser = obj.server.computeServerDelay(A,k);
                     transmissionEnergy = obj.computeTransmissionEnergy(Wbest,g,Dtx,h);
                     computationalEnergy = obj.computeComputationalEnergy(fbest,Dlcomp);
-                    cost = obj.computeDeviceCost(Z,M,Y,Dlcomp,Dtx,g,k,transmissionEnergy,computationalEnergy);
+                    cost = obj.computeDeviceCost(Z,M,Y,Dlcomp,Dtx,Dser,g,k,transmissionEnergy,computationalEnergy);
                     if cost < best_cost
                         best_cost = cost;
                         Wstar = Wbest;
@@ -118,8 +122,8 @@ classdef DeviceOptimization
         function [accuracy] = computeAccuracy(obj,k,g)
             accuracy = obj.G(g,k);
         end
-        function [cost] = computeDeviceCost(obj,Z,M,Y,Dlcomp,Dtx,g,k,transmissionEnergy,computationalEnergy)
-            cost = (obj.mu*Z+(obj.ni*M)/(obj.Dpeak))*(Dlcomp+Dtx)-obj.lambda*Y*obj.G(g,k)+obj.V*(transmissionEnergy+computationalEnergy);
+        function [cost] = computeDeviceCost(obj,Z,M,Y,Dlcomp,Dtx,Dser,g,k,transmissionEnergy,computationalEnergy)
+            cost = (obj.mu*Z+(obj.ni*M)/(obj.Dpeak))*(Dlcomp+Dtx+Dser)-obj.lambda*Y*obj.G(g,k)+obj.V*(transmissionEnergy+computationalEnergy);
         end
 
         function [obj] = selectSingleSNR(obj,snr_index)

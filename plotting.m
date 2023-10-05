@@ -1,12 +1,16 @@
 clear all;
 close all;
-dir_vect =["./NewSimulationData/veryGoodChannel/"]%,"./NewSimulationData/medChannel/","./NewSimulationData/badChannel/"]%,"./SimulationData/goodChannel/","./SimulationData/medChannel/"]%,"./SimulationData/badChannel/"];
-
+dir_vect =["./PreliminarySimulations/goodChannel/","./PreliminarySimulations/medChannel/","./PreliminarySimulations/badChannel/"]%,"./NewSimulationData/medChannel/","./NewSimulationData/badChannel/"]%,"./SimulationData/goodChannel/","./SimulationData/medChannel/"]%,"./SimulationData/badChannel/"];
+index = 3;
 label_array = ["PL = 20dB","PL = 100dB","PL = 110dB"];
 marker_array = ["-v","-diamond","-o","-v","-diamond","-o","-v","-diamond","-o"];
 color_array = ["#0072BD","#D95319","#0FEA11","#0072BD","#D95319","#0FEA11","#0072BD","#D95319","#0FEA11"];
 linestyle_array = ["--","--","--",":",":",":","-","-","-"];
-v_array =  [10000000];%[100,200,500,1000,2000,5000,10000,20000,50000,100000];
+
+v_array =  [[100,200,500,1000,2000,5000,10000,20000,50000,100000],
+    [100,200,500,1000,2000,5000,10000,20000,50000,100000],
+    [1e2,1e3,1e4,1e5,1e6,1e7,1e8,1e9,1e10,1e10]];
+
 q_array = zeros(numel(v_array),1);
 etot_array = zeros(numel(v_array),1);
 
@@ -24,13 +28,13 @@ disp("5 - Splitting Point Histograms")
 type = input("Choose: ");
 sim_duration = 1e4;
 
-trans_end_array = 9000*[1,1,1,1,1,1,1,1,1,1];
+trans_end_array = 8000*[1,1,1,1,1,1,1,1,1,1];
 switch type
     case {1,2,3}
         for d=1:numel(dir_vect)
             dir = dir_vect(d);
-            for index=1:numel(v_array)
-                load(strcat(dir,'simulation',num2str(v_array(index)),'.mat'));
+            for index=1:numel(v_array(d,:))
+                load(strcat(dir,'simulation',num2str(v_array(d,index)),'.mat'));
                 dtot = simulation.localCalculationLatencyArray+simulation.transmissionLatencyArray+simulation.serverLatencyArray;
                 qtot = mean(dtot(trans_end_array(index):sim_duration));
                 if type==1
@@ -62,9 +66,9 @@ switch type
         %axis([1e-2 1.5e-1,0.12,0.21]);
     case 4
         for d=1:numel(dir_vect)
-            dir = dir_vect(d)
-            for i=1:numel(v_array)
-                load(strcat(dir,'simulation',num2str(v_array(i)),'.mat'))
+            dir = dir_vect(d);
+            for i=1:numel(v_array(index,:))
+                load(strcat(dir,'simulation',num2str(v_array(index,i)),'.mat'))
                 figure
                 subplot(2,1,1);
                 plot(simulation.YArray)

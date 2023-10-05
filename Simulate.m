@@ -1,7 +1,8 @@
 clear vars
 close all
 
-output_dir = "./NewSimulationData/veryGoodChannel/";
+output_dir = "./PreliminarySimulations/badChannel/";
+mkdir(output_dir);
 
 %Definition of the simulation parameters
 t_sim = 10000;
@@ -32,9 +33,9 @@ fSer = 4.5e9;
 alfaSer = 1;
 
 %Lyapunov Parameters
-v_vector = [1e2,2e2,5e2,1e3,2e3,5e3,1e4,2e4,5e4,1e5];
+v_vector = [1e2,1e3,1e4,1e5,1e6,1e7,1e8,1e9,1e10,1e11];
 ni_vector = 0*ones(1,numel(v_vector));
-mu_vector = 100*ones(1,numel(v_vector));
+mu_vector = 10000*ones(1,numel(v_vector));
 lambda_vector = ones(1,numel(v_vector));
 
 %Generating Channel 
@@ -46,7 +47,7 @@ dmax = 1500;
 fc = 5e9;
 pl = 10*exponentLoss*log10(dmax)+10*exponentLoss*log10(fc)-147.55;
 %pl_linear = 10^(-pl/10);
-pl_linear = 10^(-8);
+pl_linear = 10^(-10.9);
 
 sigma = sqrt(2/(4-pi));
 h = abs(sigma*randn(1,t_sim)+1i*sigma*randn(1,t_sim));
@@ -69,11 +70,12 @@ for v=1:numel(v_vector)
     Ztracker = zeros(1,t_sim);
     Ytracker = zeros(1,t_sim);
     Mtracker = zeros(1,t_sim);
-    device = DeviceOptimization("./Data/",Wmax,roll_off,betaDev,fmax,fmin,kappa,N0,pmax,mu_vector(v),ni_vector(v),lambda_vector(v),v_vector(v));
-    device.selectSingleSNR(2)
     server = ServerSimulator("./Data/",fSer,alfaSer,betaSer,kappa);
+    device = DeviceOptimization("./Data/",Wmax,roll_off,betaDev,fmax,fmin,kappa,N0,server,pmax,mu_vector(v),ni_vector(v),lambda_vector(v),v_vector(v));
+    device.selectSingleSNR(2)
     for ts=1:t_sim
         A = poissrnd(Aavg);
+        server.updateFrequency();
         [WStar,kStar,gammaStar,fStar] = device.optimizeDevice(Z,M,Y,A,h(ts));
         [serverDelay,serverEnergy] = server.simulateServer(A,kStar);
         Dl = device.computeComputingDelay(A,kStar,fStar);
@@ -86,8 +88,7 @@ for v=1:numel(v_vector)
         accuracy = device.computeAccuracy(kStar,gammaStar);
 
         Dtot = Dl+Dtx+Dr;
-        
-        kStar-1
+
         Ztracker(ts) = Z;
         Ytracker(ts) = Y;
         Mtracker(ts) = M;

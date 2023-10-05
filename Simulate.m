@@ -6,31 +6,36 @@ output_dir = "./NewSimulationData/veryGoodChannel/";
 %Definition of the simulation parameters
 t_sim = 10000;
 N0 = 3.98e-18;
-pmax = 0.1;
+pmax = 0.1; 
 fmin = 1.4e8;
 fmax = 1.4e9;
 roll_off = 0.25;
 betaDev = 500;
 betaSer = 2000;
 kappa = 1.097e-27;
+Wmax = 5e6;
+
+%Average arrivals
+Aavg = 5;
 
 %Don't care.
 Dpeak = 0;
-Davg = 20e-3;
 outage = 0;
 
+%Latency Constraint
+Davg = 20e-3;
+%Accuracy Constraint
+Gavg = 0.7;
 
-v_vector = [10000000];
+%Server Parameters
+fSer = 4.5e9;
+alfaSer = 1;
+
+%Lyapunov Parameters
+v_vector = [1e2,2e2,5e2,1e3,2e3,5e3,1e4,2e4,5e4,1e5];
 ni_vector = 0*ones(1,numel(v_vector));
 mu_vector = 100*ones(1,numel(v_vector));
 lambda_vector = ones(1,numel(v_vector));
-Wmax = 5e6;
-Aavg = 5;
-
-fSer = 4.5e9;
-alfaSer = 1;
-Gavg = 0.7;
-
 
 %Generating Channel 
 %PL 90 dB exponentLoss=2, dmax = 100

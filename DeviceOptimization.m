@@ -63,7 +63,7 @@ classdef DeviceOptimization
             obj.server = server;
         end
 
-        function [Wstar,kStar,gammaStar,fStar] = optimizeDevice(obj,Z,M,Y,A,h)
+        function [Wstar,kStar,gammaStar,fStar] = optimizeDevice(obj,server,Z,M,Y,A,h)
             best_cost = inf;
             Wstar = 0;
             fStar = 0;
@@ -87,7 +87,7 @@ classdef DeviceOptimization
                         Wbest=0;
                         Dtx=0;
                     end
-                    Dser = obj.server.computeServerDelay(A,k);
+                    Dser = server.computeServerDelay(A,k);
                     transmissionEnergy = obj.computeTransmissionEnergy(Wbest,g,Dtx,h);
                     computationalEnergy = obj.computeComputationalEnergy(fbest,Dlcomp);
                     cost = obj.computeDeviceCost(Z,M,Y,Dlcomp,Dtx,Dser,g,k,transmissionEnergy,computationalEnergy);

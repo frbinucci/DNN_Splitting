@@ -1,18 +1,18 @@
 clear all;
 close all;
-dir_vect =["./PreliminarySimulations/goodChannel/","./PreliminarySimulations/medChannel/","./PreliminarySimulations/badChannel/"]%,"./NewSimulationData/medChannel/","./NewSimulationData/badChannel/"]%,"./SimulationData/goodChannel/","./SimulationData/medChannel/"]%,"./SimulationData/badChannel/"];
-index = 3;
+dir_vect =["./VariableAccuracyConstraints/Acc60/"]%,"./VariableAccuracyConstraints/Acc80/","./VariableAccuracyConstraints/Acc86/"]%,"./VariableAccuracyConstraints/Acc80/","./VariableAccuracyConstraints/Acc86/"]%,"./VariableAccuracyConstraints/Acc80/"]%,"./PreliminarySimulations/medChannel/","./PreliminarySimulations/badChannel/"]%,"./NewSimulationData/medChannel/","./NewSimulationData/badChannel/"]%,"./SimulationData/goodChannel/","./SimulationData/medChannel/"]%,"./SimulationData/badChannel/"];
+index = 1;
 label_array = ["PL = 20dB","PL = 100dB","PL = 110dB"];
 marker_array = ["-v","-diamond","-o","-v","-diamond","-o","-v","-diamond","-o"];
 color_array = ["#0072BD","#D95319","#0FEA11","#0072BD","#D95319","#0FEA11","#0072BD","#D95319","#0FEA11"];
 linestyle_array = ["--","--","--",":",":",":","-","-","-"];
 
-v_array =  [[100,200,500,1000,2000,5000,10000,20000,50000,100000],
-    [100,200,500,1000,2000,5000,10000,20000,50000,100000],
-    [1e2,1e3,1e4,1e5,1e6,1e7,1e8,1e9,1e10,1e10]];
+v_array =  {[1e2,2e2,5e2,1e3,2e3,5e3,1e4,2e4,5e4,1e5,2e5,5e5,1e6];
+    [1e2,5e2,1e3,5e3,1e4,5e4,1e5,5e5,1e6];
+    [1e2,5e2,1e3,5e3,1e4,5e4,1e5,5e5,1e6]};
 
-q_array = zeros(numel(v_array),1);
-etot_array = zeros(numel(v_array),1);
+q_array = zeros(numel(v_array{1}),1);
+etot_array = zeros(numel(v_array{1}),1);
 
 tau = 0.05;
 aavg_array = [2,2,2,2,2,2,2,2,2];
@@ -28,13 +28,13 @@ disp("5 - Splitting Point Histograms")
 type = input("Choose: ");
 sim_duration = 1e4;
 
-trans_end_array = 8000*[1,1,1,1,1,1,1,1,1,1];
+trans_end_array = 2000*[1,1,1,1,1,1,1,1,1,1,1,1,1];
 switch type
     case {1,2,3}
         for d=1:numel(dir_vect)
             dir = dir_vect(d);
-            for index=1:numel(v_array(d,:))
-                load(strcat(dir,'simulation',num2str(v_array(d,index)),'.mat'));
+            for index=1:numel(v_array{d})
+                load(strcat(dir,'simulation',num2str(v_array{d}(index)),'.mat'));
                 dtot = simulation.localCalculationLatencyArray+simulation.transmissionLatencyArray+simulation.serverLatencyArray;
                 qtot = mean(dtot(trans_end_array(index):sim_duration));
                 if type==1
@@ -65,27 +65,25 @@ switch type
         set(gca, 'XScale', 'log');
         %axis([1e-2 1.5e-1,0.12,0.21]);
     case 4
-        for d=1:numel(dir_vect)
-            dir = dir_vect(d);
-            for i=1:numel(v_array(index,:))
-                load(strcat(dir,'simulation',num2str(v_array(index,i)),'.mat'))
-                figure
-                subplot(2,1,1);
-                plot(simulation.YArray)
-                grid on
-                ylabel('Accuracy virtual queue')
-                subplot(2,1,2);
-                plot(simulation.ZArray)
-                grid on
-                ylabel('Latency Virtual Queue')
-                xlabel('Time-slot index')
-            end
+        dir = input("Please, select the directory of which you want to plot the virtual queues: ",'s');
+        for i=1:numel(v_array{index})
+            load(strcat(dir,'simulation',num2str(v_array{index}(i)),'.mat'))
+            figure
+            subplot(2,1,1);
+            plot(simulation.YArray)
+            grid on
+            ylabel('Accuracy virtual queue')
+            subplot(2,1,2);
+            plot(simulation.ZArray)
+            grid on
+            ylabel('Latency Virtual Queue')
+            xlabel('Time-slot index')
         end
     case 5
         for d=1:numel(dir_vect)
             figure;
             dir = dir_vect(d);
-            load(strcat(dir,'simulation',num2str(v_array(end)),'.mat'));
+            load(strcat(dir,'simulation',num2str(v_array{d}(end)),'.mat'));
             data_hist = simulation.kArray(5000:end)-1;
             histHandle = histogram(data_hist);
             %histHandle.BinEdges = histHandle.BinEdges + histHandle.BinWidth/2;

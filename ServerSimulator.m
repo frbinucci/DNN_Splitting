@@ -37,9 +37,14 @@ classdef ServerSimulator
             residualNumberFlops = obj.J_ser(end)-obj.J_ser(k);
             Drcomp = (A*residualNumberFlops)/(obj.betaSer*obj.freq);
         end
-
+        
         function [serverEnergy] = computeServerEnergy(obj,Drcomp)
             serverEnergy = obj.kSer*obj.freq^3*Drcomp;
         end
+
+        function [freq] = getFreq(obj)
+            freq = obj.freq;
+        end
+
     end
 end

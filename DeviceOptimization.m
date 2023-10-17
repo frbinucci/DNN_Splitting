@@ -23,6 +23,12 @@ classdef DeviceOptimization
         roll_off
         G
 
+        tx_weight
+        comp_weight
+
+        snr_subset
+        splitting_point_subset
+
         server
     end
 
@@ -31,16 +37,20 @@ classdef DeviceOptimization
             load(strcat(data_folder,"cumulative_energy_vs_SP.mat"))
             load(strcat(data_folder,"num_features_vs_SP.mat"))
             load(strcat(data_folder,"num_FLOPS_vs_SP.mat"))
-            load(strcat(data_folder,"snr_array.mat"))
-            load(strcat(data_folder,"accuracy_lut.mat"))
+            load(strcat(data_folder,"new_snr_array.mat"))
+            load(strcat(data_folder,"new_accuracy_lut.mat"))
             load(strcat(data_folder,"splitting_points.mat"))
             
             obj.SP_array = splitting_points;
             obj.E_array = energy_split;
             obj.W_array = num_features;
             obj.J_array = cumsum(FLOPS_DATA);
-            obj.SNR_array = 10.^(snr_array/10);
-            obj.G = accuracy_lut;
+            obj.SNR_array = 10.^(new_snr_array/10);
+            obj.G = new_accuracy_lut;
+
+            %Parameters used to don't care specific energetic costs
+            obj.tx_weight = 1;
+            obj.comp_weight = 1;
 
             obj.roll_off = roll_off;
 
@@ -61,16 +71,19 @@ classdef DeviceOptimization
             obj.fmin = fmin;
             obj.kappa = kappa;
             obj.server = server;
+
+            obj.snr_subset = 1:numel(obj.SNR_array);
+            obj.splitting_point_subset = 1:numel(obj.SP_array);
         end
 
-        function [Wstar,kStar,gammaStar,fStar] = optimizeDevice(obj,server,Z,M,Y,A,h)
+        function [Wstar,kStar,gammaStar,fStar,snrStar] = optimizeDevice(obj,server,Z,M,Y,A,h)
             best_cost = inf;
             Wstar = 0;
             fStar = 0;
             kStar = 1;
             gammaStar = 1;
-            for k=1:numel(obj.SP_array)
-                for g=1:numel(obj.SNR_array)
+            for k=obj.splitting_point_subset
+                for g=obj.snr_subset
                     if k>1
                         fbest = nthroot((obj.mu*Z+obj.ni*M/obj.Dpeak)/(2*obj.kappa*obj.V),3);
                         fbest = max(fbest,obj.fmin);
@@ -97,6 +110,11 @@ classdef DeviceOptimization
                         fStar = fbest;
                         gammaStar = g;
                         kStar = k;
+                        if numel(obj.SNR_array)==1
+                            snrStar = 10*log10(obj.SNR_array);
+                        else
+                            snrStar = 10*log10(obj.SNR_array(g));
+                        end
                     end
                 end
             end
@@ -123,12 +141,33 @@ classdef DeviceOptimization
             accuracy = obj.G(g,k);
         end
         function [cost] = computeDeviceCost(obj,Z,M,Y,Dlcomp,Dtx,Dser,g,k,transmissionEnergy,computationalEnergy)
-            cost = (obj.mu*Z+(obj.ni*M)/(obj.Dpeak))*(Dlcomp+Dtx+Dser)-obj.lambda*Y*obj.G(g,k)+obj.V*(transmissionEnergy+computationalEnergy);
+            cost = (obj.mu*Z+(obj.ni*M)/(obj.Dpeak))*(Dlcomp+Dtx+Dser)-obj.lambda*Y*obj.G(g,k)+obj.V*(obj.tx_weight*transmissionEnergy+obj.comp_weight*computationalEnergy);
         end
 
-        function [obj] = selectSingleSNR(obj,snr_index)
-            fprintf("You selected SNR = %d dB",10*log10(obj.SNR_array(snr_index)))
-            obj.G = obj.G(snr_index,:);
+        function [obj] = setSNRSubSet(obj,snr_index)
+            fprintf("The optimization will be performed considering the following SNRs: \n")
+            for index=snr_index
+                fprintf("%d)SNR = %d dB\n",index, 10*log10(obj.SNR_array(index)))
+            end
+            %obj.G = obj.G(snr_index,:);
+            obj.snr_subset = snr_index;
+            %obj.SNR_array = obj.SNR_array(snr_index);
+        end
+
+        function [obj] = setSPSubSet(obj,SP_index)
+            fprintf("The optimization will be performed considering the following SPs: \n")
+            for index=SP_index
+                fprintf("SP = %d\n", index)
+            end
+            obj.splitting_point_subset = SP_index;
+        end        
+
+        function [obj] = setTxWeight(obj,tx_weight)
+            obj.tx_weight = tx_weight;
+        end
+
+        function [obj] = setCompWeight(obj,comp_weight)
+            obj.comp_weight = comp_weight;
         end
     end
 end

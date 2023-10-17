@@ -1,18 +1,17 @@
+%To be deleted...
+
 clear all;
 close all;
-dir_vect =["./VariableAccuracyConstraints/Acc60/"]%,"./VariableAccuracyConstraints/Acc80/","./VariableAccuracyConstraints/Acc86/"]%,"./VariableAccuracyConstraints/Acc80/","./VariableAccuracyConstraints/Acc86/"]%,"./VariableAccuracyConstraints/Acc80/"]%,"./PreliminarySimulations/medChannel/","./PreliminarySimulations/badChannel/"]%,"./NewSimulationData/medChannel/","./NewSimulationData/badChannel/"]%,"./SimulationData/goodChannel/","./SimulationData/medChannel/"]%,"./SimulationData/badChannel/"];
+dir_vect =["./VariableAccuracyConstraints/PathLoss90/Acc60/","./VariableAccuracyConstraints/PathLoss90/Acc88/"]%,"./VariableAccuracyConstraints/PathLoss90Old/Acc88/"]%,"./VariableAccuracyConstraints/PathLoss90/Acc88/"]%,"./VariableAccuracyConstraints/PathLoss90/Acc88/"]%,"./VariableAccuracyConstraints/PathLoss90/Acc88/"]%,"./VariableAccuracyConstraints/PathLoss90/Acc88/"]%,"./VariableAccuracyConstraints/PathLoss90/Acc88/"]%,"./VariableAccuracyConstraints/PathLoss90/Acc88/"]%,"./VariableAccuracyConstraints/PathLoss90/Acc88/"]%,"./VariableAccuracyConstraints/PathLoss90/Acc88/"]%,"./VariableAccuracyConstraints/PathLoss90/Acc88/"]%,"./VariableAccuracyConstraints/PathLoss90/Acc86/"]%,"./VariableAccuracyConstraints/PathLoss90/Acc86/"]%,"./VariableAccuracyConstraints/PathLoss90/Acc86/"]%,"./VariableAccuracyConstraints/PathLoss90/Acc86/"]%,"./VariableAccuracyConstraints/PathLoss90/Acc86/"]%,"./VariableAccuracyConstraints/PathLoss90/Acc89/"]%,"./VariableAccuracyConstraints/PathLoss90/Acc89/"]%,"./VariableAccuracyConstraints/PathLoss90/Acc89/"]%,"./VariableAccuracyConstraints/PathLoss90/Acc70/"]%,"./VariableAccuracyConstraints/PathLoss90/Acc88/"]%,"./VariableAccuracyConstraints/Acc88/"]%,"./VariableAccuracyConstraints/Acc88/"]%,"./VariableAccuracyConstraints/Acc70/"]%,"./VariableAccuracyConstraints/Acc88/"]%,"./VariableAccuracyConstraints/Acc70/","./VariableAccuracyConstraints/Acc86/"]%,"./VariableAccuracyConstraints/Acc70/","./VariableAccuracyConstraints/Acc86/"];%,"./VariableAccuracyConstraints/Acc70/"]%,"./VariableAccuracyConstraints/Acc80/","./VariableAccuracyConstraints/Acc86/"]%,"./VariableAccuracyConstraints/Acc80/","./VariableAccuracyConstraints/Acc86/"]%,"./VariableAccuracyConstraints/Acc80/"]%,"./PreliminarySimulations/medChannel/","./PreliminarySimulations/badChannel/"]%,"./NewSimulationData/medChannel/","./NewSimulationData/badChannel/"]%,"./SimulationData/goodChannel/","./SimulationData/medChannel/"]%,"./SimulationData/badChannel/"];
 index = 1;
-label_array = ["PL = 20dB","PL = 100dB","PL = 110dB"];
+label_array = ["Accuracy = 60%","Accuracy = 88%","PL = 110dB"];
 marker_array = ["-v","-diamond","-o","-v","-diamond","-o","-v","-diamond","-o"];
 color_array = ["#0072BD","#D95319","#0FEA11","#0072BD","#D95319","#0FEA11","#0072BD","#D95319","#0FEA11"];
 linestyle_array = ["--","--","--",":",":",":","-","-","-"];
 
-v_array =  {[1e2,2e2,5e2,1e3,2e3,5e3,1e4,2e4,5e4,1e5,2e5,5e5,1e6];
-    [1e2,5e2,1e3,5e3,1e4,5e4,1e5,5e5,1e6];
-    [1e2,5e2,1e3,5e3,1e4,5e4,1e5,5e5,1e6]};
-
-q_array = zeros(numel(v_array{1}),1);
-etot_array = zeros(numel(v_array{1}),1);
+v_array =  {[1e1,1e2,1e3,1e4,1e5];
+    [1e1,1e2,1e3,1e4,1e5];
+    [1e2,2e2,5e2,1e3,2e3,5e3,1e4,2e4,5e4,1e5,2e5,5e5,1e6]};
 
 tau = 0.05;
 aavg_array = [2,2,2,2,2,2,2,2,2];
@@ -28,12 +27,15 @@ disp("5 - Splitting Point Histograms")
 type = input("Choose: ");
 sim_duration = 1e4;
 
-trans_end_array = 2000*[1,1,1,1,1,1,1,1,1,1,1,1,1];
+trans_end_array = 9000*[1,1,1,1,1,1,1,1,1,1,1,1,1];
 switch type
     case {1,2,3}
         for d=1:numel(dir_vect)
             dir = dir_vect(d);
+            q_array = zeros(numel(v_array{d}),1);
+            etot_array = zeros(numel(v_array{d}),1);
             for index=1:numel(v_array{d})
+
                 load(strcat(dir,'simulation',num2str(v_array{d}(index)),'.mat'));
                 dtot = simulation.localCalculationLatencyArray+simulation.transmissionLatencyArray+simulation.serverLatencyArray;
                 qtot = mean(dtot(trans_end_array(index):sim_duration));
@@ -84,8 +86,9 @@ switch type
             figure;
             dir = dir_vect(d);
             load(strcat(dir,'simulation',num2str(v_array{d}(end)),'.mat'));
-            data_hist = simulation.kArray(5000:end)-1;
-            histHandle = histogram(data_hist);
+            strcat(dir,'simulation',num2str(v_array{d}(end)),'.mat')
+            data_hist = simulation.kArray()-1;
+            histHandle = histogram(data_hist(5000:end));
             %histHandle.BinEdges = histHandle.BinEdges + histHandle.BinWidth/2;
             legend(label_array(d));
             xticks(linspace(0,19,20))

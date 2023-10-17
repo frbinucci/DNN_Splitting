@@ -1,11 +1,11 @@
 clear all;
 close all;
 
-load('./Data/accuracy_lut.mat');
-accuracy_lut =accuracy_lut*100;
+load('./Data/new_accuracy_lut.mat');
+accuracy_lut =new_accuracy_lut*100;
 x_axis = linspace(0,19,20);
-legend_labels = ["\boldmath$\overline{\gamma}$ = -5 dB", "\boldmath$\overline{\gamma}$ = -3 dB", "\boldmath$\overline{\gamma}$ = 0 dB", "\boldmath$\overline{\gamma}$ = 5 dB", "\boldmath$\overline{\gamma}$ = 10 dB","\boldmath$\overline{\gamma}$ = 20 dB"];
-marker_array = ["o","diamond","Hexagram","Pentagram","*","square"];
+legend_labels = ["\boldmath$\overline{\gamma}$ = -5 dB", "\boldmath$\overline{\gamma}$ = -4 dB","\boldmath$\overline{\gamma}$ = -3 dB","\boldmath$\overline{\gamma}$ = -2 dB", "\boldmath$\overline{\gamma}$ = 0 dB","\boldmath$\overline{\gamma}$ = 5 dB","\boldmath$\overline{\gamma}$ = 10 dB","\boldmath$\overline{\gamma}$ = 20 dB",];
+marker_array = ["o","diamond","Hexagram","Pentagram","*","square","^","v"];
 
 
 figure;

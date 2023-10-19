@@ -4,12 +4,12 @@ snr_names = ["SNRNeg5","SNRNeg4","SNRNeg3","SNRNeg2","SNR0","SNR5","SNR10","SNR2
 
 rng(46);
 snr_index = 1:8;
-sp_index = [11];
+sp_index = [20];
 
 path_loss_db = 90;
 fixed_snr = true;
 opt_acc = true;
-accuracy_const = 85;
+accuracy_const = 80;
 realizations = 1;
 comparison_type = "SP";
 basename = './SplittingPointComparison'
@@ -66,8 +66,8 @@ alfaSer = 1;
 %Lyapunov Parameters
 v_vector = [1e8];
 ni_vector = 0*ones(1,numel(v_vector));
-mu_vector = 4e2*ones(1,numel(v_vector));
-lambda_vector =2e2*opt_acc*ones(1,numel(v_vector));
+mu_vector = 1e3*ones(1,numel(v_vector));
+lambda_vector =1e2*opt_acc*ones(1,numel(v_vector));
 
 %Generating Channel 
 %PL 90 dB exponentLoss=2, dmax = 100

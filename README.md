@@ -1,7 +1,6 @@
 # DNN_Splitting
 DNN Splitting for Edge Assisted Inference with Convolutional Neural Networks
 
-<<<<<<< HEAD
 This repository contains the implementation of the resource allocation strategy presented in the paper [Enabling Edge Artificial Intelligence via Goal-oriented Deep Neural Network Splitting](https://arxiv.org/abs/2312.03555).
 
 **Usage**
@@ -16,7 +15,3 @@ The *Simulate.m* script allows to test the resource allocation strategy in a spe
 **Plotting**
 
 To reproduce Fig.3 of the referenced paper, launch the script *plotEnergyAccuracyTOForFixedSNRComparison.m* and select the option 5. To reproduce Fig.4 of the referenced paper, launch the script *plotEnergyAccuracyTOForFixedSPComparison.m* and select the option 7. 
-
-=======
-This repository contains the implementation of the resource allocation strategy presented in the paper [Enabling Edge Artificial Intelligence via Goal-oriented Deep Neural Network Splitting](https://arxiv.org/abs/2312.03555)
->>>>>>> 29eab95d3f734effb801190db8ebf93883976dd2

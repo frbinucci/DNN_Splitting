@@ -4,15 +4,15 @@ snr_names = ["SNRNeg5","SNRNeg4","SNRNeg3","SNRNeg2","SNR0","SNR5","SNR10","SNR2
 
 rng(46);
 snr_index = 1:8;
-sp_index = [20];
+sp_index = 20;
 
-path_loss_db = 90;
+path_loss_db = 125;
 fixed_snr = true;
 opt_acc = true;
-accuracy_const = 80;
+accuracy_const = 85;
 realizations = 1;
 comparison_type = "SP";
-basename = './SplittingPointComparison'
+basename = './SplittingPointComparisonCorrectedNoise'
 
 if strcmp("SNR", comparison_type)
     if numel(snr_index)==1
@@ -33,7 +33,7 @@ mkdir(output_dir);
 
 %Definition of the simulation parameters
 t_sim = 10000;
-N0 = 3.98e-18;
+N0 = 3.98e-21;
 pmax = 0.3; 
 fmin = 0;
 fmax = 1.4e9;
@@ -55,7 +55,7 @@ Dpeak = 0;
 outage = 0;
 
 %Latency Constraint
-Davg = 120e-3;
+Davg = 50e-3;
 %Accuracy Constraint
 Gavg = accuracy_const/100;
 
@@ -66,8 +66,8 @@ alfaSer = 1;
 %Lyapunov Parameters
 v_vector = [1e8];
 ni_vector = 0*ones(1,numel(v_vector));
-mu_vector = 1e3*ones(1,numel(v_vector));
-lambda_vector =1e2*opt_acc*ones(1,numel(v_vector));
+mu_vector = 5e3*ones(1,numel(v_vector));
+lambda_vector =3e2*opt_acc*ones(1,numel(v_vector));
 
 %Generating Channel 
 %PL 90 dB exponentLoss=2, dmax = 100

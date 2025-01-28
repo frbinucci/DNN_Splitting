@@ -3,7 +3,7 @@ DNN Splitting for Edge Assisted Inference with Convolutional Neural Networks
 
 This repository contains the implementation of the resource allocation strategy presented in the paper [Enabling Edge Artificial Intelligence via Goal-oriented Deep Neural Network Splitting](https://arxiv.org/abs/2312.03555).
 
-**Abstract**
+## Abstract
 
 Deep Neural Network (DNN) splitting is one of the key enablers of edge Artificial Intelligence (AI), as it allows end users to pre-process data and offload part of the computational burden to nearby Edge Cloud Servers (ECSs). This opens new opportunities and degrees of freedom in balancing energy consumption, delay, accuracy, privacy, and other trustworthiness metrics. In this work, we explore the opportunity of DNN splitting at the edge of 6G wireless networks to enable low energy cooperative inference with target delay and accuracy with a goal-oriented perspective. Going beyond the current literature, we explore new trade-offs that take into account the accuracy degradation as a function of the Splitting Point (SP) selection and wireless channel conditions. Then, we propose an algorithm that dynamically controls SP selection, local computing resources, uplink transmit power and bandwidth allocation, in a goal-oriented fashion, to meet a target goal-effectiveness. To the best of our knowledge, this is the first work proposing adaptive SP selection on the basis of all learning performance (i.e., energy, delay, accuracy), with the aim of guaranteeing the accomplishment of a goal (e.g., minimize the energy consumption under latency and accuracy constraints). Numerical results show the advantages of the proposed SP selection and resource allocation, to enable energy frugal and effective edge AI.
 

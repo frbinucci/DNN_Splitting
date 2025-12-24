@@ -4,7 +4,7 @@
 
 This repository contains the reference implementation of the resource allocation strategy presented in:
 
-- F. Binucci, M. Merluzzi, P. Banelli, E. C. Strinati, and P. Di Lorenzo,  
+- F. Binucci, M. Merluzzi, P. Banelli, E. C. Strinati, and P. Di Lorenzo,
   **“Enabling Edge Artificial Intelligence via Goal-oriented Deep Neural Network Splitting,”**  
   *Proc. 19th International Symposium on Wireless Communication Systems (ISWCS)*, Rio de Janeiro, Brazil, 2024, pp. 1–6.  
   DOI: https://doi.org/10.1109/ISWCS61526.2024.10639178  

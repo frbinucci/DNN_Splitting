@@ -54,6 +54,8 @@ If you use this code in your work, please cite:
   doi       = {10.1109/ISWCS61526.2024.10639178}
 }
 
+---
+
 ## Contributing
 
 Contributions are welcome.

@@ -53,8 +53,7 @@ If you use this code in your work, please cite:
   pages     = {1--6},
   doi       = {10.1109/ISWCS61526.2024.10639178}
 }
-
----
+```
 
 ## Contributing
 
@@ -64,13 +63,10 @@ Contributions are welcome.
 - Submit a PR with a clear description and minimal reproducible example
 - Add tests for new functionality where possible
 
----
-
 ## License
 
 Licensed under the MIT License. See LICENSE.
 
----
 
 ## Contact
 
